@@ -81,3 +81,21 @@ export const signIn = async (req, res) => {
     }
 }
 
+export const signOut = async (req, res) => {
+    try {
+        //lay refreshToken tu cookie
+        const refreshToken = req.cookies?.refreshToken;
+        if (refreshToken) {
+            //xoa refreshtoken ngay trong session
+            await Session.deleteOne({ refreshToken: refreshToken });
+            //xoa refreshToken trong session
+            res.clearCookie("refreshToken");//xoa cookie trong trinh duyet
+        }
+        //tra ve message
+        return res.status(204).json({ message: "User logged out successfully" });
+    } catch (error) {
+        console.error("Lỗi khi signOut", error);
+        return res.status(500).json({ message: "Lỗi hệ thống" });
+    }
+}
+
